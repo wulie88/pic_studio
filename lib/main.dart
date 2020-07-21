@@ -1,8 +1,7 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+
+import 'panel.dart';
+import 'work_panel.dart';
 
 void main() {
   runApp(MyApp());
@@ -57,48 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   Widget contentWidget;
   List<Widget> imageList = [Text("R")];
-  List<File> files = [];
-
-  Future listDir(String folderPath) async {
-    Directory tempDir = await getTemporaryDirectory();
-    String tempPath = tempDir.path;
-    print(tempPath);
-
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    String appDocPath = appDocDir.path;
-    print(appDocPath);
-
-    var directory = new Directory(appDocPath + folderPath);
-    print(directory);
-
-    var exists = await directory.exists();
-    if (exists) {
-      print("exits");
-
-      directory
-          .list(recursive: true, followLinks: false)
-          .listen((FileSystemEntity entity) async {
-        if (FileSystemEntity.isFileSync(entity.path)) {
-          if (RegExp(r"[jpg|png]$").hasMatch(entity.path)) {
-            print(entity.path + " is image file");
-            this.setState(() {
-              imageList:
-              imageList.add(Image.file(entity));
-              files:
-              files.add(entity);
-            });
-          }
-        } else {
-          await listDir(entity.path);
-        }
-        print(entity.path);
-      });
-    }
-  }
 
   void _incrementCounter() {
-    listDir("/PhotoLibrary");
-
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -120,9 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // contentWidget = Text("contentWidget"); //ListView(clidren: imageList,);
 
     contentWidget = Expanded(
-                  child: Column(
-                    children: imageList,
-                  ));
+        child: Column(
+      children: imageList,
+    ));
     return Scaffold(
       // appBar: AppBar(
       //   // Here we take the value from the MyHomePage object that was created by
@@ -131,19 +90,9 @@ class _MyHomePageState extends State<MyHomePage> {
       // ),
       body: Row(
         children: <Widget>[
-          HomePannel(HomePannelType.HomePannelTypeSide, title: 'LEFT'),
-          HomePannel(HomePannelType.HomePannelTypeSection,
-              contentWidget: contentWidget, title: 'Section'),
-          HomePannel(HomePannelType.HomePannelTypeSide, title: 'Right'),
-          Column(
-            children: imageList,
-          )
-          // ListView.builder(
-          //   itemCount: files.length,
-          //   itemBuilder: (BuildContext context, int index) {
-          //     return Image.file(files[index]);
-          //   }
-          // ),
+          Panel(PanelType.PanelTypeSide, title: 'LEFT'),
+          WorkPanel(),
+          Panel(PanelType.PanelTypeSide, title: 'Right'),
           // Text(
           //   '$_counter',
           //   style: Theme.of(context).textTheme.headline4,
@@ -157,70 +106,5 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
-  }
-}
-
-class HomePannelTypeSide {}
-
-enum HomePannelType {
-  HomePannelTypeSide,
-  HomePannelTypeSection,
-}
-
-class HomePannel extends StatefulWidget {
-  final String title;
-  final HomePannelType type;
-  final Widget contentWidget;
-
-  const HomePannel(this.type, {Key key, this.contentWidget, this.title})
-      : super(key: key);
-
-  @override
-  PannelState createState() =>
-      PannelState(this.type, this.contentWidget, this.title);
-}
-
-class PannelState extends State<HomePannel> {
-  final String title;
-  final HomePannelType type;
-  final Widget contentWidget;
-
-  PannelState(this.type, this.contentWidget, this.title);
-
-  @override
-  Widget build(BuildContext context) {
-    var container = type == HomePannelType.HomePannelTypeSide
-        ? Container(
-            padding: const EdgeInsets.all(10.0),
-            width: 268,
-            child: Column(
-              children: [
-                Text(
-                  'yyy112' + title,
-                )
-              ],
-            ),
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.black)),
-              color: Colors.black87,
-            ),
-          )
-        : Expanded(
-            child: Container(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                Text(
-                  'yyy112' + title,
-                ),
-                contentWidget
-              ],
-            ),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black),
-              color: Colors.black87,
-            ),
-          ));
-    return container;
   }
 }
