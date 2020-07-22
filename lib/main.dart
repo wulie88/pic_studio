@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:pic_studio/panel/guider_panel.dart';
 
-import 'panel.dart';
-import 'work_panel.dart';
+import 'common/workstation_model.dart';
+import 'package:pic_studio/panel/panel.dart';
+import 'package:pic_studio/panel/work_panel.dart';
+import 'package:pic_studio/panel/sider_panel.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => WorkstationModel(),
+    child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -23,7 +29,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blueGrey,
         // This makes the visual density adapt to the platform that you run
         // the app on. For desktop platforms, the controls will be smaller and
         // closer together (more dense) than on mobile platforms.
@@ -90,9 +96,9 @@ class _MyHomePageState extends State<MyHomePage> {
       // ),
       body: Row(
         children: <Widget>[
-          Panel(PanelType.PanelTypeSide, title: 'LEFT'),
+          GuiderPanel(),
           WorkPanel(),
-          Panel(PanelType.PanelTypeSide, title: 'Right'),
+          SiderPanel(),
           // Text(
           //   '$_counter',
           //   style: Theme.of(context).textTheme.headline4,

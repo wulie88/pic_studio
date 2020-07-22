@@ -14,20 +14,20 @@ class Panel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var themeData = Theme.of(context);
+
     var container = type == PanelType.PanelTypeSide
         ? Container(
             padding: const EdgeInsets.all(10.0),
             width: 268,
-            child: Column(
-              children: [
-                Text(
-                  'yyy112' + title,
-                )
-              ],
-            ),
+            child: child != null
+                ? child
+                : Text(
+                    'yyy112' + title,
+                  ),
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.black)),
-              color: Colors.black87,
+              border: Border(top: BorderSide(color: themeData.dividerColor)),
+              color: themeData.primaryColor,
             ),
           )
         : Expanded(
